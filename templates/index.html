@@ -1,12 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-    <title>Title</title>
-</head>
-<body>
-Привет.<br>
-Сайт на {{ name }}
-</body>
-</html>
+{% extends "base.html" %}
+{% block content %}
+    <a href="/database">Сайт на {{ name }}</a>
+{% endblock %}

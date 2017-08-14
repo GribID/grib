@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+        {% if title %}
+        <title>{{ title }}</title>
+        {% else %}
+        <title>Title</title>
+        {% endif %}
+    </head>
+    <body>
+        Привет.<br>
+        {% block content %}{% endblock %}
+    </body>
+</html>

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+    Выборка данных из БД<br><br>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Password</th>
+            <th>Email</th>
+        </tr>
+        {% for item in items %}
+         <tr>
+             <td><a href="/user/{{ item.uid }}">{{ item.uid }}</a></td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.pwd }}</td>
+            <td>{{ item.email }}</td>
+         </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
