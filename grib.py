@@ -1,9 +1,11 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
+from flask_wtf import FlaskForm
+from wtforms import StringField, validators
 
 app = Flask(__name__)
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://igor:lipton@10.120.40.14:5432/igor'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://igor:Lipton518@grib.cloudns.cc:5432/igor'
+app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 db = SQLAlchemy(app)
 
 
@@ -19,6 +21,10 @@ class Gusers(db.Model):
         self.name = name
         self.pwd = pwd
         self.email = email
+
+
+class RegForm(FlaskForm):
+    nickname = StringField('name', [validators.Length(min=4, max=20)])
 
 
 @app.route('/')
@@ -37,6 +43,15 @@ def database():
 @app.route('/user/<usr_code>')
 def usr_show(usr_code):
     return render_template('user.html', title='User', item=Gusers.query.filter_by(uid=usr_code).first())
+
+
+@app.route('/reg', methods=['GET', 'POST'])
+def reg():
+    form = RegForm(request.form)
+    if request.method == 'POST' and form.validate():
+        return form.nickname.data
+    return render_template('register.html', form=form)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
