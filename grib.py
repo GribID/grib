@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
-from wtforms import StringField, validators
+from wtforms import StringField, PasswordField, validators
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://igor:Lipton518@grib.cloudns.cc:5432/igor'
@@ -11,10 +11,10 @@ db = SQLAlchemy(app)
 
 class Gusers(db.Model):
     __tablename__ = 'g_users'
-    uid = db.Column('usr_id', db.INTEGER, primary_key=True)
-    name = db.Column('usr_name', db.Unicode)
-    pwd = db.Column('usr_pass', db.Unicode)
-    email = db.Column('usr_email', db.Unicode)
+    uid = db.Column('usr_id', db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column('usr_name', db.String(20))
+    pwd = db.Column('usr_pass', db.String(20))
+    email = db.Column('usr_email', db.String(50))
 
     def __init__(self, uid, name, pwd, email):
         self.uid = uid
@@ -22,9 +22,14 @@ class Gusers(db.Model):
         self.pwd = pwd
         self.email = email
 
+# db.drop_all()
+# db.create_all()
+
 
 class RegForm(FlaskForm):
-    nickname = StringField('name', [validators.Length(min=4, max=20)])
+    name = StringField('name', [validators.Length(min=4, max=20)])
+    pwd = PasswordField('pwd', [validators.Length(min=4, max=20)])
+    email = StringField('email', [validators.Email(message='Error')])
 
 
 @app.route('/')
@@ -49,7 +54,10 @@ def usr_show(usr_code):
 def reg():
     form = RegForm(request.form)
     if request.method == 'POST' and form.validate():
-        return form.nickname.data
+        u = Gusers(uid=None, name=form.name.data, pwd=form.pwd.data, email=form.email.data)
+        db.session.add(u)
+        db.session.commit()
+        return 'Пользователь добавлен'
     return render_template('register.html', form=form)
 
 
